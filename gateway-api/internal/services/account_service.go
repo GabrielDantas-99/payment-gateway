@@ -1,0 +1,29 @@
+package services
+
+import (
+	"github.com/GabrielDantas-99/payment-gateway/gateway-api/internal/domain"
+	"github.com/GabrielDantas-99/payment-gateway/gateway-api/internal/dto"
+)
+
+type AccountService struct {
+	repository domain.AccountRepository
+}
+
+func (s *AccountService) CreateAccount(input dto.CreateAccountInput) (*dto.AccountOutput, error) {
+	account := dto.ToAccount(input)
+	existingAccount, err := s.repository.FindByAPIKey(account.APIKey)
+
+	if err != nil && err != domain.ErrAccountNotFound {
+		return nil, err
+	}
+	if existingAccount != nil {
+		return nil, domain.ErrDuplicatedAPIKey
+	}
+	err = s.repository.Save(account)
+	if err != nil {
+		return nil, err
+	}
+	
+	output := dto.FromAccount(account)
+	return &output, nil
+}
