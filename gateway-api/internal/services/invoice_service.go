@@ -22,27 +22,22 @@ func (s *InvoiceService) Create(input dto.CreateInvoiceInput) (*dto.InvoiceOutpu
 	if err != nil {
 		return nil, err
 	}
-
 	invoice, err := dto.ToInvoice(input, accountOutput.ID)
 	if err != nil {
 		return nil, err
 	}
-
 	if err := invoice.Process(); err != nil {
 		return nil, err
 	}
-
 	if invoice.Status == domain.StatusApproved {
 		_, err = s.accountService.UpdateBalance(input.APIKey, invoice.Amount)
 		if err != nil {
 			return nil, err
 		}
 	}
-
 	if err := s.invoiceRepository.Save(invoice); err != nil {
 		return nil, err
 	}
-
 	return dto.FromInvoice(invoice), nil
 }
 
@@ -51,16 +46,13 @@ func (s *InvoiceService) GetByID(id, apiKey string) (*dto.InvoiceOutput, error) 
 	if err != nil {
 		return nil, err
 	}
-
 	accountOutput, err := s.accountService.FindByAPIKey(apiKey)
 	if err != nil {
 		return nil, err
 	}
-
 	if invoice.AccountID != accountOutput.ID {
 		return nil, domain.ErrUnauthorizedAccess
 	}
-
 	return dto.FromInvoice(invoice), nil
 }
 
@@ -69,7 +61,6 @@ func (s *InvoiceService) ListByAccount(accountID string) ([]*dto.InvoiceOutput, 
 	if err != nil {
 		return nil, err
 	}
-
 	output := make([]*dto.InvoiceOutput, len(invoices))
 	for i, invoice := range invoices {
 		output[i] = dto.FromInvoice(invoice)
@@ -82,6 +73,5 @@ func (s *InvoiceService) ListByAccountAPIKey(apiKey string) ([]*dto.InvoiceOutpu
 	if err != nil {
 		return nil, err
 	}
-
 	return s.ListByAccount(accountOutput.ID)
 }
