@@ -4,6 +4,14 @@ Sistema completo de gateway de pagamento, incluindo geração e processamento de
 
 ---
 
+<img src="docs/images/gateway-de-pagamento.svg" width="100%" />
+
+---
+
+<img src="docs/images/design-system.png" width="100%" />
+
+---
+
 ## 🚀 Features
 
 - ✅ **Criação de contas:** Permite a criação de contas com geração automática de API-key para autenticação.
@@ -16,15 +24,15 @@ Sistema completo de gateway de pagamento, incluindo geração e processamento de
 
 ## 🧰 Tecnologias Utilizadas
 
-| Tecnologia        | Finalidade                                                   |
-|-------------------|--------------------------------------------------------------|
-| **Go**            | Back-end principal do gateway de pagamento                   |
-| **Next.js**       | Interface web e dashboard em tempo real                      |
-| **NestJS**        | Micro-serviço de antifraude                                  |
-| **Apache Kafka**  | Comunicação assíncrona entre serviços (event-driven)         |
-| **Docker**        | Containerização para ambientes consistentes e produtivos     |
-| **Cursor**        | IDE com foco em produtividade com suporte a IA               |
-| **Model Context Protocol (MCP)** | Integração IA + ferramentas para acelerar o desenvolvimento  |
+| Tecnologia                       | Finalidade                                                  |
+| -------------------------------- | ----------------------------------------------------------- |
+| **Go**                           | Back-end principal do gateway de pagamento                  |
+| **Next.js**                      | Interface web e dashboard em tempo real                     |
+| **NestJS**                       | Micro-serviço de antifraude                                 |
+| **Apache Kafka**                 | Comunicação assíncrona entre serviços (event-driven)        |
+| **Docker**                       | Containerização para ambientes consistentes e produtivos    |
+| **Cursor**                       | IDE com foco em produtividade com suporte a IA              |
+| **Model Context Protocol (MCP)** | Integração IA + ferramentas para acelerar o desenvolvimento |
 
 ---
 
@@ -42,25 +50,25 @@ Sistema completo de gateway de pagamento, incluindo geração e processamento de
 
 ### 🧾 Account
 
-| Campo     | Descrição                                 |
-|-----------|--------------------------------------------|
-| `name`    | Nome da conta                              |
-| `email`   | E-mail do titular                          |
+| Campo     | Descrição                                         |
+| --------- | ------------------------------------------------- |
+| `name`    | Nome da conta                                     |
+| `email`   | E-mail do titular                                 |
 | `balance` | Saldo disponível (somatório de faturas aprovadas) |
-| `api_key` | Chave de autenticação (gerada na criação)  |
+| `api_key` | Chave de autenticação (gerada na criação)         |
 
 ---
 
 ### 💸 Invoice
 
-| Campo           | Descrição                              |
-|------------------|------------------------------------------|
-| `accountId`      | ID da conta associada                    |
-| `amount`         | Valor da fatura                          |
+| Campo            | Descrição                                               |
+| ---------------- | ------------------------------------------------------- |
+| `accountId`      | ID da conta associada                                   |
+| `amount`         | Valor da fatura                                         |
 | `status`         | Status da transação (`Pending`, `Approved`, `Rejected`) |
-| `description`    | Descrição da transação                   |
-| `paymentType`    | Tipo de pagamento                        |
-| `cardLastDigits` | Últimos dígitos do cartão utilizado      |
+| `description`    | Descrição da transação                                  |
+| `paymentType`    | Tipo de pagamento                                       |
+| `cardLastDigits` | Últimos dígitos do cartão utilizado                     |
 
 ---
 
@@ -74,18 +82,18 @@ Sistema completo de gateway de pagamento, incluindo geração e processamento de
 
 ### 🔐 Gerenciamento de Contas
 
-| Método | Rota         | Descrição                |
-|--------|--------------|--------------------------|
-| `POST` | `/accounts`  | Criação de nova conta    |
-| `GET`  | `/accounts`  | Listagem de contas       |
+| Método | Rota        | Descrição             |
+| ------ | ----------- | --------------------- |
+| `POST` | `/accounts` | Criação de nova conta |
+| `GET`  | `/accounts` | Listagem de contas    |
 
 ### 💳 Operações com Invoices (requer `X-API-KEY` no header)
 
-| Método | Rota               | Descrição                     |
-|--------|--------------------|-------------------------------|
-| `POST` | `/invoices`        | Criação de nova fatura        |
-| `GET`  | `/invoices`        | Listagem de faturas           |
-| `GET`  | `/invoices/{id}`   | Detalhes de uma fatura        |
+| Método | Rota             | Descrição              |
+| ------ | ---------------- | ---------------------- |
+| `POST` | `/invoices`      | Criação de nova fatura |
+| `GET`  | `/invoices`      | Listagem de faturas    |
+| `GET`  | `/invoices/{id}` | Detalhes de uma fatura |
 
 ---
 
