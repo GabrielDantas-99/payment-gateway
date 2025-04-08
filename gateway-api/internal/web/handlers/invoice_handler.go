@@ -10,6 +10,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+type contextKey string
+
+const accountKey contextKey = "account"
+
 type InvoiceHandler struct {
 	service *services.InvoiceService
 }
@@ -20,15 +24,6 @@ func NewInvoiceHandler(service *services.InvoiceService) *InvoiceHandler {
 	}
 }
 
-func getAPIKey(r *http.Request, w http.ResponseWriter) (string, bool) {
-	apiKey := r.Header.Get("X-API-KEY")
-	if apiKey == "" {
-		http.Error(w, "X-API-KEY is required", http.StatusUnauthorized)
-		return "", false
-	}
-	return apiKey, true
-}
-
 func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var input dto.CreateInvoiceInput
 	err := json.NewDecoder(r.Body).Decode(&input)
@@ -37,11 +32,8 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	apiKey, ok := getAPIKey(r, w)
-	if !ok {
-		return
-	}
-	input.APIKey = apiKey
+	account := r.Context().Value(accountKey).(*domain.Account)
+	input.APIKey = account.APIKey
 
 	output, err := h.service.Create(input)
 	if err != nil {
@@ -61,24 +53,25 @@ func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	apiKey, ok := getAPIKey(r, w)
-	if !ok {
-		return
-	}
+	account := r.Context().Value(accountKey).(*domain.Account)
+	apiKey := account.APIKey
 
 	output, err := h.service.GetByID(id, apiKey)
 	if err != nil {
 		switch err {
 		case domain.ErrInvoiceNotFound:
 			http.Error(w, err.Error(), http.StatusNotFound)
+			return
 		case domain.ErrAccountNotFound:
 			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
 		case domain.ErrUnauthorizedAccess:
 			http.Error(w, err.Error(), http.StatusForbidden)
+			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
-		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -86,21 +79,21 @@ func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *InvoiceHandler) ListByAccount(w http.ResponseWriter, r *http.Request) {
-	apiKey, ok := getAPIKey(r, w)
-	if !ok {
-		return
-	}
+	account := r.Context().Value(accountKey).(*domain.Account)
+	apiKey := account.APIKey
 
 	output, err := h.service.ListByAccountAPIKey(apiKey)
 	if err != nil {
 		switch err {
 		case domain.ErrAccountNotFound:
 			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
-		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(output)
 }
