@@ -29,6 +29,7 @@ func (m *AuthMiddleware) Authenticate(next http.Handler) http.Handler {
 			http.Error(w, "X-API-KEY is required", http.StatusUnauthorized)
 			return
 		}
+
 		account, err := m.accountService.FindByAPIKey(apiKey)
 		if err != nil {
 			if err == domain.ErrAccountNotFound {

@@ -10,10 +10,6 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type contextKey string
-
-const accountKey contextKey = "account"
-
 type InvoiceHandler struct {
 	service *services.InvoiceService
 }
@@ -32,8 +28,7 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	account := r.Context().Value(accountKey).(*domain.Account)
-	input.APIKey = account.APIKey
+	input.APIKey = r.Header.Get("X-API-KEY")
 
 	output, err := h.service.Create(input)
 	if err != nil {
@@ -53,8 +48,11 @@ func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	account := r.Context().Value(accountKey).(*domain.Account)
-	apiKey := account.APIKey
+	apiKey := r.Header.Get("X-API-KEY")
+	if apiKey == "" {
+		http.Error(w, "X-API-KEY is required", http.StatusBadRequest)
+		return
+	}
 
 	output, err := h.service.GetByID(id, apiKey)
 	if err != nil {
@@ -79,8 +77,11 @@ func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *InvoiceHandler) ListByAccount(w http.ResponseWriter, r *http.Request) {
-	account := r.Context().Value(accountKey).(*domain.Account)
-	apiKey := account.APIKey
+	apiKey := r.Header.Get("X-API-KEY")
+	if apiKey == "" {
+		http.Error(w, "X-API-KEY is required", http.StatusUnauthorized)
+		return
+	}
 
 	output, err := h.service.ListByAccountAPIKey(apiKey)
 	if err != nil {

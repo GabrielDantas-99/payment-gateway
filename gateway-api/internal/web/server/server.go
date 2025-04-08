@@ -10,11 +10,11 @@ import (
 )
 
 type Server struct {
-	router *chi.Mux
-	server *http.Server
+	router         *chi.Mux
+	server         *http.Server
 	accountService *services.AccountService
 	invoiceService *services.InvoiceService
-	port string
+	port           string
 }
 
 func NewServer(accountService *services.AccountService, invoiceService *services.InvoiceService, port string) *Server {
