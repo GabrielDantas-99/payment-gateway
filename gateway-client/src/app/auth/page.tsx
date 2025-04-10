@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { InfoIcon as InfoCircle } from "lucide-react"
+import { ArrowRight, InfoIcon as InfoCircle } from "lucide-react"
 
 export default function AuthPage() {
   const router = useRouter()
@@ -44,22 +44,8 @@ export default function AuthPage() {
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                 />
-                <Button type="submit" className="bg-primary hover:bg-primary/90">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
-                  </svg>
+                <Button type="submit" variant={"secondary"} className="bg-primary hover:bg-primary/90">
+                  <ArrowRight />
                 </Button>
               </div>
             </div>

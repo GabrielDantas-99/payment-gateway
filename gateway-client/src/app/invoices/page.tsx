@@ -68,10 +68,12 @@ export default function InvoiceListPage() {
               <h1 className="text-2xl font-bold mb-1">Invoices</h1>
               <p className="text-muted-foreground text-sm">Manage your invoices and track payments</p>
             </div>
-            <Button asChild className="mt-4 md:mt-0 bg-primary hover:bg-primary/90">
-              <Link href="/invoices/new">
-                <Plus className="h-4 w-4 mr-2" />
-                New Invoice
+            <Button asChild variant={"secondary"} className="flex items-center mt-4 md:mt-0 bg-primary hover:bg-primary/90">
+              <Link className="flex items-center" href="/invoices/new">
+                <Plus />
+                <span className="-mt-0.5">
+                  New Invoice
+                </span>
               </Link>
             </Button>
           </div>
@@ -83,7 +85,7 @@ export default function InvoiceListPage() {
                   Status
                 </label>
                 <Select defaultValue="all">
-                  <SelectTrigger className="bg-secondary border-border">
+                  <SelectTrigger>
                     <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent>
@@ -175,7 +177,7 @@ export default function InvoiceListPage() {
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Previous page</span>
               </Button>
-              <Button variant="default" size="sm" className="h-8 w-8 p-0 bg-primary hover:bg-primary/90">
+              <Button variant="secondary" size="sm" className="h-8 w-8 p-0 bg-primary hover:bg-primary/90">
                 1
               </Button>
               <Button variant="outline" size="sm" className="h-8 w-8 p-0">

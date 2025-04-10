@@ -11,9 +11,11 @@ export function Header() {
         </Link>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">Hello, user</span>
-          <Button variant="destructive" size="sm" className="flex items-center gap-1">
+          <Button variant="destructive" size="sm" className="flex items-center gap-1 cursor-pointer">
             <LogOut className="h-4 w-4" />
-            Logout
+            <span className="-mt-0.5">
+              Logout
+            </span>
           </Button>
         </div>
       </div>
