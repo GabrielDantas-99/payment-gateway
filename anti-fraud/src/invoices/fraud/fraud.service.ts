@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProcessInvoiceFraudDto } from '../dto/process-invoice-fraud.dto';
 import { Account, FraudReason, InvoiceStatus } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FraudService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private configService: ConfigService,
+  ) {}
+
   async processInvoice(processInvoiceFraudDto: ProcessInvoiceFraudDto) {
     const { invoice_id, account_id, amount } = processInvoiceFraudDto;
     const foundInvoice = await this.prismaService.invoice.findUnique({
@@ -61,6 +66,18 @@ export class FraudService {
   async detectFraud(data: { account: Account; amount: number }) {
     const { account, amount } = data;
 
+    const SUSPICIOUS_VARIATION_PERCENTAGE =
+      this.configService.getOrThrow<number>('SUSPICIOUS_VARIATION_PERCENTAGE');
+    const INVOICES_HISTORY_COUNT = this.configService.getOrThrow<number>(
+      'INVOICES_HISTORY_COUNT',
+    );
+    const SUSPICIOUS_INVOICES_COUNT = this.configService.getOrThrow<number>(
+      'SUSPICIOUS_INVOICES_COUNT',
+    );
+    const SUSPICIOUS_TIMEFRAME_HOURS = this.configService.getOrThrow<number>(
+      'SUSPICIOUS_TIMEFRAME_HOURS',
+    );
+
     if (account.isSuspicious) {
       return {
         hasFraud: true,
@@ -74,7 +91,7 @@ export class FraudService {
         accountId: account.id,
       },
       orderBy: { createdAt: 'desc' },
-      take: 20,
+      take: INVOICES_HISTORY_COUNT,
     });
 
     if (previousInvoices.length) {
@@ -84,7 +101,11 @@ export class FraudService {
       );
       const avarageAmount = totalAmount / previousInvoices.length;
 
-      if (amount > avarageAmount * (1 + 50 / 100) + avarageAmount) {
+      if (
+        amount >
+        avarageAmount * (1 + SUSPICIOUS_VARIATION_PERCENTAGE / 100) +
+          avarageAmount
+      ) {
         return {
           hasFraud: true,
           reason: FraudReason.UNUSUAL_PATTERN,
@@ -93,7 +114,7 @@ export class FraudService {
       }
 
       const recentDate = new Date();
-      recentDate.setHours(recentDate.getHours() - 24);
+      recentDate.setHours(recentDate.getHours() - SUSPICIOUS_TIMEFRAME_HOURS);
 
       const recentInvoices = await this.prismaService.invoice.findMany({
         where: {
@@ -104,11 +125,11 @@ export class FraudService {
         },
       });
 
-      if (recentInvoices.length >= 100) {
+      if (recentInvoices.length >= SUSPICIOUS_INVOICES_COUNT) {
         return {
           hasFraud: true,
           reason: FraudReason.FREQUENT_HIGH_VALUE,
-          description: `Account ${account.id} has more than the average amount 100`,
+          description: `Account ${account.id} has more than ${SUSPICIOUS_INVOICES_COUNT} invoices in the last ${SUSPICIOUS_TIMEFRAME_HOURS} hours`,
         };
       }
     }
