@@ -23,7 +23,7 @@ export async function InvoiceList() {
     const invoices = await getInvoices();
 
     return (
-        <div className="bg-[#1e293b] rounded-lg p-6 border border-gray-800">
+        <div className="bg-card rounded-lg p-6 border border-gray-800">
             <div className="flex justify-between items-center mb-4">
                 <div>
                     <h1 className="text-2xl font-bold text-white mb-1">Faturas</h1>
