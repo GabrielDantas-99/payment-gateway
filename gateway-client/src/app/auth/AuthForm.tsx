@@ -1,5 +1,5 @@
 
-import { InfoIcon } from "lucide-react";
+import { ArrowRight, InfoIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -23,11 +23,11 @@ export function AuthForm() {
                         type="submit"
                         className="bg-indigo-600 hover:bg-indigo-700 text-white"
                     >
-                        →
+                        <ArrowRight />
                     </Button>
                 </div>
             </div>
-            <Alert className="bg-[#2a3749] border-gray-700 mt-4">
+            <Alert className="mt-4">
                 <InfoIcon className="h-4 w-4 text-blue-400" />
                 <AlertTitle className="text-gray-200">
                     Como obter uma API Key?

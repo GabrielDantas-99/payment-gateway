@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Eye, Download, ChevronLeft, ChevronRight, Plus } from "lucide-react"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -60,7 +59,6 @@ export default function InvoiceListPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
       <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
         <div className="bg-card rounded-lg p-6 shadow-lg">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
