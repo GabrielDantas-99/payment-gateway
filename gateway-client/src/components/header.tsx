@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { logoutAction } from "@/app/actions/logout"
 
 export function Header() {
   return (
@@ -11,12 +12,16 @@ export function Header() {
         </Link>
         <div className="flex items-center gap-4">
           <span className="text-muted-foreground">Hello, user</span>
-          <Button variant="destructive" size="sm" className="flex items-center gap-1 cursor-pointer">
-            <LogOut className="h-4 w-4" />
-            <span className="-mt-0.5">
+          <form action={logoutAction}>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="flex items-center gap-1"
+            >
+              <LogOut size={16} />
               Logout
-            </span>
-          </Button>
+            </Button>
+          </form>
         </div>
       </div>
     </header>
